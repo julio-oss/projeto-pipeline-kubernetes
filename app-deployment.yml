@@ -1,0 +1,23 @@
+
+apiverssion: apps/v1
+kind: deployment
+metadata: 
+  name: app
+  labels:
+    app: app
+spec:
+  replica: 3
+  selector:
+    marchlabels:
+      app: app
+  template:
+    metadata:
+      labels:
+        app: app
+    spec:
+      containers:
+      - name: app
+        image: denilsonbonatti/kubernetes-projetos-dio:1.0
+        imagepullpolicy: always
+        ports:
+        - containerport: 80

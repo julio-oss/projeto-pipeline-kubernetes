@@ -1,0 +1,15 @@
+
+apiversion: v1
+kind: persistentvome
+metadata:
+  name: localpersist
+  labels:
+    type: localpersist
+spec:
+  storageclassname: manual
+  capacity: 
+    storage: 1Gi
+  accessmodes:
+    - radwriteonce
+  hostpath:
+    path: /meubanco/

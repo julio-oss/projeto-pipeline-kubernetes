@@ -1,0 +1,68 @@
+apiversion: v1
+kind: persistentevolumeclaim
+metadata:
+  name: localpersist
+spec:
+  accessmodes:
+    - Readwriteonce
+  resources:
+    requests:
+      storage: 1Gi
+  storageclassname: manual
+
+---
+
+apiversion:apps/v1
+kind: deployment
+metadata:
+  name: mysql
+spec:
+  selector:
+    matchlabels
+      app: mysql
+  template:
+    metadata:
+      labels:
+        app: mysql
+    spec:
+      containers:
+      - name: mysql
+        image: mysql:latest
+        imagepullpolicy: always
+        ports:
+        - containerport:3306
+        env:
+          - name:
+MYSQL_ROOT_PASSWORD
+            valueFrom:
+             secretkeyRef:
+               name: my-secret
+               key:ROOT_PASSWORD
+          - name: MYSQL_DATABASE
+            valueFrom:
+              secretkeyRef:
+                name: my-secret
+                key: MYSQL_DATABASE
+        
+         volumeMounts:
+         - mountpath: /var/lib/mysql
+           name: localpersist
+            
+      volumes:
+        - name: localpersist
+          persistentvolumeclaim:
+            claimname: localpersist
+
+
+---
+
+apiversion:v1 
+kind: service
+metadata:
+  name: mysql-connection
+spec:
+  ports:
+  - port:3306
+  selector:
+  app: mysql
+  clusterIP: none
